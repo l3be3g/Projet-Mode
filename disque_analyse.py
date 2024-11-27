@@ -50,7 +50,7 @@ q = [(3*10**7),(6*10**7),(1.3*10**8)]
 
 
 # Graphique
-prm.k=k[0]
+prm.k = k[0]
 R1,t1=mdf(prm)
 
 prm.k=k[1]
