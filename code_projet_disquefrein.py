@@ -35,9 +35,10 @@ def mdf(prm, q):
 
     A = np.zeros([prm.n,prm.n])
     b = np.zeros(prm.n)
-    vect_avant = np.full(prm.n, prm.Tair)
+    t= np.zeros(prm.n)
+    tempé_init = np.full(prm.n, prm.Tair)
 
-    dt = 15 / (prm.n -1)
+    dt = (prm.tfrein + prm.tatt) / (prm.n -1)
 
     A[0,0]= -3
     A[0,1]= 4
@@ -54,7 +55,7 @@ def mdf(prm, q):
     
     r = np.linspace(prm.Ri,prm.Re,prm.n)
 
-    
+    #while
     for i in range (1,(prm.n)-1):
         if r[i] < prm.Ri: 
             q = 0
@@ -67,6 +68,11 @@ def mdf(prm, q):
     
     sol= np.linalg.solve(A,b)
 
+    # t=np.append(t, t[-1] + dt)
+    # Ttot= np.vstack() (tous les T à tous les t)
+
+    #stack les sols pour voir evol en fct du temps
+    #ecraser vect_avant avec sol précédente
 
     return r, sol
 
