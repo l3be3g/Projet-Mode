@@ -8,7 +8,7 @@ Created on Tue Nov 26 11:41:11 2024
 
 import numpy as np
 
-def mdf(prm):
+def mdf(prm, q):
     """Fonction simulant avec la méthode des différences finies
 
     Entrées:
@@ -25,7 +25,6 @@ def mdf(prm):
             - Tmax : Température maximum sécuritaire [K]
             - n : Nombre de noeuds [-]
             - dr : Pas en espace [m]
-            - 
 
     Sortie (dans l'ordre énuméré ci-bas):
         - Vecteur (array) de dimension N composé de la position radiale à laquelle les températures sont calculées, où N le nombre de noeuds.
@@ -57,7 +56,10 @@ def mdf(prm):
 
     
     for i in range (1,(prm.n)-1):
-
+        if r[i] < prm.Ri: 
+            q = 0
+        else:
+            q = q
         A[i,i-1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
         A[i,i]= 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
         A[i,i+1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((-prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
