@@ -32,10 +32,13 @@ def mdf(prm):
     """
 
     # Fonction à écrire
-    
+
     A = np.zeros([prm.n,prm.n])
     b = np.zeros(prm.n)
-    
+    vect_avant = np.full(prm.n, prm.Tair)
+
+    dt = 15 / (prm.n -1)
+
     A[0,0]= -3
     A[0,1]= 4
     A[0,2]= -1
@@ -50,16 +53,19 @@ def mdf(prm):
     b[-1] = -prm.h * prm.Tair
     
     r = np.linspace(prm.Ri,prm.Re,prm.n)
-    
-    dt = #INITIALISER
+
     
     for i in range (1,(prm.n)-1):
+
         A[i,i-1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
         A[i,i]= 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
         A[i,i+1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((-prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
-        b[i] = Ti + ( ( q[i] * dt ) / (prm.rho * prm.cp ) ) + ( 100 * prm.h * r[i]**2 * dt ) / ( prm.rho * prm.cp )
+        b[i] = vect_avant + ( ( prm.q[i] * dt ) / (prm.rho * prm.cp ) ) + ( 100 * prm.h * r[i]**2 * dt ) / ( prm.rho * prm.cp )
+
+        
     
     sol= np.linalg.solve(A,b)
+
 
     return r, sol
 

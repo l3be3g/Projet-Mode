@@ -36,7 +36,7 @@ class parametres():
     tfrein = 10 #[s] temps freinage pour génération chaleur
     tatt = 5 #[s] temps attente pour T max
     Tmax = 425 #[K] T maximum sécuritaire
-    n = 100 Nombre de noeuds [-]
+    n = 100 # Nombre de noeuds [-]
     dr = (Re-Ri)/(n-1) #Pas en espace [m]
     
  
