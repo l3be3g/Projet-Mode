@@ -25,7 +25,7 @@ def mdf(prm):
             - Tmax : Température maximum sécuritaire [K]
             - n : Nombre de noeuds [-]
             - dr : Pas en espace [m]
-
+            - q : 
     Sortie (dans l'ordre énuméré ci-bas):
         - Vecteur (array) de dimension N composé de la position radiale à laquelle les températures sont calculées, où N le nombre de noeuds.
         - Vecteur (array) de dimension N composé de la température en fonction du rayon, où N le nombre de noeuds
