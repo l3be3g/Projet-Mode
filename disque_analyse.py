@@ -52,7 +52,7 @@ prm = parametres()
 
 
 # Graphique
-prm.k=k[0]
+prm.k = k[0]
 R1,t1=mdf(prm)
 
 prm.k=k[1]
