@@ -1,3 +1,4 @@
+@@ -1,62 +1,62 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -38,13 +39,14 @@ class parametres():
     Tmax = 425 #[K] T maximum sécuritaire
     n = 100 # Nombre de noeuds [-]
     dr = (Re-Ri)/(n-1) #Pas en espace [m]
+    q = [(3*10**7),(6*10**7),(1.3*10**8)]
     
  
     
 prm = parametres()
 
 # trois cas de génération de chaleur q [W/m^3] pour [faible, fort, urgence]
-q = [(3*10**7),(6*10**7),(1.3*10**8)]
+
 
 # Méthode de différences finies
 
