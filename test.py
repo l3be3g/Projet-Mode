@@ -28,7 +28,7 @@ def mdf(prm, num_points, qdot, %vecteur%, delta_t)
     delta_r = R/(num_points-1)
     position_r = np.linspace(0,R,num_points)
 
-    # Création de la matrice A et B
+    # Création de la matrice A et B,
 
     for i in range num_points:
     

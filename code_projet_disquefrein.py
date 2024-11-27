@@ -57,6 +57,7 @@ def mdf(prm):
         A[i,i-1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
         A[i,i]= 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
         A[i,i+1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((-prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
+        b[i] = Ti + ( ( q[i] * dt ) / (prm.rho * prm.cp ) ) + ( 100 * prm.h * r[i]**2 * dt ) / ( prm.rho * prm.cp )
     
     sol= np.linalg.solve(A,b)
 
