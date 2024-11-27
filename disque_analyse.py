@@ -1,3 +1,4 @@
+@@ -1,62 +1,62 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -39,6 +40,7 @@ class parametres():
     n = 100 # Nombre de noeuds [-]
     dr = (Re-Ri)/(n-1) #Pas en espace [m]
     
+    
  
     
 prm = parametres()
@@ -49,24 +51,4 @@ q = [(3*10**7),(6*10**7),(1.3*10**8)]
 # Méthode de différences finies
 
 
-# Graphique
-prm.k=k[0]
-R1,t1=mdf(prm)
 
-prm.k=k[1]
-R2, t2=mdf(prm)
-
-prm.k=k[2]
-R3, t3=mdf(prm)
-
-plt.plot(R1,t1, label='Béton')
-plt.plot(R2,t2, label='Acier')
-plt.plot(R3,t3, label='Aluminium')
-plt.title('Profil de température des 3 matériaux')
-plt.xlabel('Rayon (m)')
-plt.ylabel('Température (K)')
-plt.legend()
-plt.show()
-
-# Correction
-pytest.main(['-q', '--tb=long', 'conduite_corr.py'])

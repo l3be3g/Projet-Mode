@@ -8,7 +8,7 @@ Created on Tue Nov 26 11:41:11 2024
 
 import numpy as np
 
-def mdf(prm):
+def mdf(prm, q):
     """Fonction simulant avec la méthode des différences finies
 
     Entrées:
@@ -35,9 +35,10 @@ def mdf(prm):
 
     A = np.zeros([prm.n,prm.n])
     b = np.zeros(prm.n)
-    vect_avant = np.full(prm.n, prm.Tair)
+    t= np.zeros(prm.n)
+    tempé_init = np.full(prm.n, prm.Tair)
 
-    dt = 15 / (prm.n -1)
+    dt = (prm.tfrein + prm.tatt) / (prm.n -1)
 
     A[0,0]= -3
     A[0,1]= 4
@@ -54,18 +55,24 @@ def mdf(prm):
     
     r = np.linspace(prm.Ri,prm.Re,prm.n)
 
-    
+    #while
     for i in range (1,(prm.n)-1):
-
+        if r[i] < prm.Ri: 
+            q = 0
+        else:
+            q = q
         A[i,i-1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
         A[i,i]= 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
         A[i,i+1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((-prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
-        b[i] = vect_avant + ( ( prm.q[i] * dt ) / (prm.rho * prm.cp ) ) + ( 100 * prm.h * r[i]**2 * dt ) / ( prm.rho * prm.cp )
-
-        
+        b[i] = vect_avant[i] + ( ( prm.q * dt ) / (prm.rho * prm.cp ) ) + ( 100 * prm.h * r[i]**2 * dt ) / ( prm.rho * prm.cp )
     
     sol= np.linalg.solve(A,b)
 
+    # t=np.append(t, t[-1] + dt)
+    # Ttot= np.vstack() (tous les T à tous les t)
+
+    #stack les sols pour voir evol en fct du temps
+    #ecraser vect_avant avec sol précédente
 
     return r, sol
 
