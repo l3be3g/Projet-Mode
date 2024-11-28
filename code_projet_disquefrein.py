@@ -1,10 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 26 11:41:11 2024
 
-@author: maevasigouin
-"""
 
 import numpy as np
 
@@ -36,8 +30,13 @@ def mdf(prm, q):
 
     A = np.zeros([prm.n,prm.n])
     b = np.zeros(prm.n)
+    r = np.linspace(0, prm.Re, prm.n)
+
     #t= np.zeros(prm.n)
-    tempé_init = np.full(prm.n, prm.Tair)
+    tempe_init = np.full(prm.n, prm.Tair)
+    tempe_avant = tempe_init
+    Ttot= []
+    t=0
 
     dt = (prm.tfrein + prm.tatt) / (prm.n -1)
 
@@ -54,28 +53,25 @@ def mdf(prm, q):
     b[0] = 0
     b[-1] = -prm.h * prm.Tair
     
-    r = np.linspace(prm.Ri,prm.Re,prm.n)
-
-    tempé_avant = tempé_init
-    t=0
 
     while t < (prm.tfrein + prm.tatt):
 
     
         for i in range (1,(prm.n)-1):
             if r[i] < prm.Ri: 
-                q = 0
+                q_local = 0
+                
             else:
-                q = q
+                q_local = q
 
             A[i,i-1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
             A[i,i]= 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
             A[i,i+1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((-prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
-            b[i] = tempé_avant[i] + ( ( q * dt ) / (prm.rho * prm.Cp ) ) + ( 100 * prm.h * r[i]**2 * dt ) / ( prm.rho * prm.Cp )
+            b[i] = tempe_avant[i] + ( ( q_local * dt ) / (prm.rho * prm.Cp ) ) + ( 100 * prm.h * r[i]**2 * dt ) / ( prm.rho * prm.Cp )
         
         sol= np.linalg.solve(A,b)
-        Ttot =np.vstack(sol)  #stack les sols pour voir evol en fct du temps
-        tempé_avant = sol #ecraser vect_avant avec sol précédente
+        Ttot.append(sol)  #stack les sols pour voir evol en fct du temps
+        tempe_avant = sol #ecraser vect_avant avec sol précédente
         t += dt
 
 
