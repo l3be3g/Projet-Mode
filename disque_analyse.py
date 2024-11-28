@@ -1,11 +1,5 @@
 
 
-"""
-Created on Tue Nov 26 11:59:49 2024
-
-@author: maevasigouin
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -21,8 +15,6 @@ except:
 # visualiser les résultats.
 #------------------------------------------------------------------------------
 
-# Assignation des paramètres
-# ATTENTION! Ne pas changer le nom des attributs, seulement les valeurs
 class parametres():
     Re = 0.25 #[m] rayon externe du disque de frein
     Ri = (2*Re)/3 #[m] rayon minimal où il y a propagation de température
@@ -45,22 +37,42 @@ q = [(3*10**7),(6*10**7),(1.3*10**8)]
 
 # Méthode de différences finies
 
+# Truc pour graph
+labels = ["Freinage faible", "Freinage fort", "Freinage d'urgence"]
+colors = ["blue", "orange", "red"]
 
-qdot=q[1]
-sim=mdf(prm, qdot)
-y = sim[1]
-x = sim[0]
+plt.figure(figsize=(10, 6))
 
-plt.plot(x, y)
+# Courbes pour chaque cas
+for i, qdot in enumerate(q): 
+    r, sol, Ttot = mdf(prm, qdot)
+    plt.plot(r, sol, label=labels[i], color=colors[i], linewidth=2)
+
+# Graphique
+plt.title("Distribution radiale de la température pour différents cas de freinage", fontsize=14)
+plt.xlabel("Rayon [m]", fontsize=12)
+plt.ylabel("Température [K]", fontsize=12)
+plt.legend(fontsize=12)
+plt.grid(True)
+plt.tight_layout()
+
+plt.show()
 
 
-## Représentation graphique dans un disque circulaire
-#theta = np.linspace(0, 2 * np.pi, 100)  # Angle pour les coordonnées polaires
-#r_grid, theta_grid = np.meshgrid(r, theta)  # Grille en coordonnées polaires
+# qdot = q[0]
 
-## Conversion vers les coordonnées cartésiennes
-#x = r_grid * np.cos(theta_grid)
-#y = r_grid * np.sin(theta_grid)
+# sim = mdf(prm,qdot)
 
-## Température étendue sur les angles pour la visualisation
-#T_grid = np.tile(T, (len(theta), 1))
+# x = sim[0]
+# y = sim[1]
+
+# # ## Représentation graphique dans un disque circulaire
+# theta = np.linspace(0, 2 * np.pi, 100)  # Angle pour les coordonnées polaires
+# r_grid, theta_grid = np.meshgrid(r, theta)  # Grille en coordonnées polaires
+
+# # ## Conversion vers les coordonnées cartésiennes
+# x = r_grid * np.cos(theta_grid)
+# y = r_grid * np.sin(theta_grid)
+
+# # ## Température étendue sur les angles pour la visualisation
+# T_grid = np.tile(T, (len(theta), 1))
