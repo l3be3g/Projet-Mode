@@ -1,6 +1,4 @@
-@@ -1,62 +1,62 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+
 """
 Created on Tue Nov 26 11:59:49 2024
 
@@ -9,8 +7,6 @@ Created on Tue Nov 26 11:59:49 2024
 
 import numpy as np
 import matplotlib.pyplot as plt
-import pytest
-import time
 
 try:
     from code_projet_disquefrein import *
@@ -39,11 +35,9 @@ class parametres():
     Tmax = 425 #[K] T maximum sécuritaire
     n = 100 # Nombre de noeuds [-]
     dr = (Re-Ri)/(n-1) #Pas en espace [m]
-    
-    
- 
-    
+      
 prm = parametres()
+
 
 # trois cas de génération de chaleur q [W/m^3] pour [faible, fort, urgence]
 q = [(3*10**7),(6*10**7),(1.3*10**8)]
@@ -51,4 +45,21 @@ q = [(3*10**7),(6*10**7),(1.3*10**8)]
 # Méthode de différences finies
 
 
+qdot=q[1]
+sim=mdf(prm, qdot)
+y = sim[1]
+x = sim[0]
 
+plt.plot(x, y)
+
+
+## Représentation graphique dans un disque circulaire
+#theta = np.linspace(0, 2 * np.pi, 100)  # Angle pour les coordonnées polaires
+#r_grid, theta_grid = np.meshgrid(r, theta)  # Grille en coordonnées polaires
+
+## Conversion vers les coordonnées cartésiennes
+#x = r_grid * np.cos(theta_grid)
+#y = r_grid * np.sin(theta_grid)
+
+## Température étendue sur les angles pour la visualisation
+#T_grid = np.tile(T, (len(theta), 1))
