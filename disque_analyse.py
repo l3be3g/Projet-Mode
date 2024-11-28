@@ -1,6 +1,5 @@
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+
 """
 Created on Tue Nov 26 11:59:49 2024
 
@@ -9,8 +8,6 @@ Created on Tue Nov 26 11:59:49 2024
 
 import numpy as np
 import matplotlib.pyplot as plt
-import pytest
-import time
 
 try:
     from code_projet_disquefrein import *
@@ -39,36 +36,31 @@ class parametres():
     Tmax = 425 #[K] T maximum sécuritaire
     n = 100 # Nombre de noeuds [-]
     dr = (Re-Ri)/(n-1) #Pas en espace [m]
-    q = [(3*10**7),(6*10**7),(1.3*10**8)]
-    
- 
-    
+      
 prm = parametres()
 
-# trois cas de génération de chaleur q [W/m^3] pour [faible, fort, urgence]
 
+# trois cas de génération de chaleur q [W/m^3] pour [faible, fort, urgence]
+q = [(3*10**7),(6*10**7),(1.3*10**8)]
 
 # Méthode de différences finies
 
 
-# Graphique
-prm.k = k[0]
-R1,t1=mdf(prm)
+qdot=q[1]
+sim=mdf(prm, qdot)
+y = sim[1]
+x = sim[0]
 
-prm.k=k[1]
-R2, t2=mdf(prm)
+plt.plot(x, y)
 
-prm.k=k[2]
-R3, t3=mdf(prm)
 
-plt.plot(R1,t1, label='Béton')
-plt.plot(R2,t2, label='Acier')
-plt.plot(R3,t3, label='Aluminium')
-plt.title('Profil de température des 3 matériaux')
-plt.xlabel('Rayon (m)')
-plt.ylabel('Température (K)')
-plt.legend()
-plt.show()
+## Représentation graphique dans un disque circulaire
+#theta = np.linspace(0, 2 * np.pi, 100)  # Angle pour les coordonnées polaires
+#r_grid, theta_grid = np.meshgrid(r, theta)  # Grille en coordonnées polaires
 
-# Correction
-pytest.main(['-q', '--tb=long', 'conduite_corr.py'])
+## Conversion vers les coordonnées cartésiennes
+#x = r_grid * np.cos(theta_grid)
+#y = r_grid * np.sin(theta_grid)
+
+## Température étendue sur les angles pour la visualisation
+#T_grid = np.tile(T, (len(theta), 1))

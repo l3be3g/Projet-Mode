@@ -8,7 +8,7 @@ Created on Tue Nov 26 11:41:11 2024
 
 import numpy as np
 
-def mdf(prm):
+def mdf(prm, q):
     """Fonction simulant avec la méthode des différences finies
 
     Entrées:
@@ -25,20 +25,21 @@ def mdf(prm):
             - Tmax : Température maximum sécuritaire [K]
             - n : Nombre de noeuds [-]
             - dr : Pas en espace [m]
-            - 
-
+        - q : 
     Sortie (dans l'ordre énuméré ci-bas):
-        - Vecteur (array) de dimension N composé de la position radiale à laquelle les températures sont calculées, où N le nombre de noeuds.
-        - Vecteur (array) de dimension N composé de la température en fonction du rayon, où N le nombre de noeuds
+        - r : Vecteur (array) de dimension N composé de la position radiale à laquelle les températures sont calculées, où N le nombre de noeuds.
+        - sol : Vecteur (array) de dimension N composé de la température en fonction du rayon, où N le nombre de noeuds
+        -Ttot : Vecteur (array) de dimension N*15 composé des vecteurs sol mis ensemble par vstack
     """
 
     # Fonction à écrire
 
     A = np.zeros([prm.n,prm.n])
     b = np.zeros(prm.n)
-    vect_avant = np.full(prm.n, prm.Tair)
+    #t= np.zeros(prm.n)
+    tempé_init = np.full(prm.n, prm.Tair)
 
-    dt = 15 / (prm.n -1)
+    dt = (prm.tfrein + prm.tatt) / (prm.n -1)
 
     A[0,0]= -3
     A[0,1]= 4
@@ -55,16 +56,34 @@ def mdf(prm):
     
     r = np.linspace(prm.Ri,prm.Re,prm.n)
 
+    tempé_avant = tempé_init
+    t=0
+
+    while t < (prm.tfrein + prm.tatt):
+
     
-    for i in range (1,(prm.n)-1):
+        for i in range (1,(prm.n)-1):
+            if r[i] < prm.Ri: 
+                q = 0
+            else:
+                q = q
 
-        A[i,i-1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
-        A[i,i]= 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
-        A[i,i+1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((-prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
-        b[i] = vect_avant[i] + ( ( prm.q * dt ) / (prm.rho * prm.cp ) ) + ( 100 * prm.h * r[i]**2 * dt ) / ( prm.rho * prm.cp )
+            A[i,i-1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
+            A[i,i]= 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
+            A[i,i+1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((-prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
+            b[i] = tempé_avant[i] + ( ( q * dt ) / (prm.rho * prm.Cp ) ) + ( 100 * prm.h * r[i]**2 * dt ) / ( prm.rho * prm.Cp )
+        
+        sol= np.linalg.solve(A,b)
+        Ttot =np.vstack(sol)  #stack les sols pour voir evol en fct du temps
+        tempé_avant = sol #ecraser vect_avant avec sol précédente
+        t += dt
+
+
+    # t=np.append(t, t[-1] + dt)
+    # Ttot= np.vstack() (tous les T à tous les t)
+
     
-    sol= np.linalg.solve(A,b)
+    #ecraser vect_avant avec sol précédente
 
-
-    return r, sol
+    return r, sol, Ttot #quoi dautre? vecteur temps?
 
