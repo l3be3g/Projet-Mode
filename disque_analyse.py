@@ -21,13 +21,13 @@ class parametres():
     k = 70 #[W/m*K] coefficient conductivité thermique du matériau du disque de frein
     Cp = 480 #[J/kg*K] capacité calorifique du matériau du disque de frein
     rho = 7200 #[kg/m^3] densité
-    Tair = 293.15 #[K] Température infini de l'air
+    Tair = 293.15  #[K] Température infini de l'air
     h = 10 # [W/m^2*K] coefficient de convection thermique
     tfrein = 10 #[s] temps freinage pour génération chaleur
     tatt = 5 #[s] temps attente pour T max
     Tmax = 425+273.15 #[K] T maximum sécuritaire
     n = 100 # Nombre de noeuds [-]
-    dr = (Re-Ri)/(n-1) #Pas en espace [m]
+    dr = (Re)/(n-1) #Pas en espace [m]
       
 prm = parametres()
 
@@ -66,9 +66,6 @@ plt.tight_layout()
 plt.show()
 
 # Verification: posons des qdot inférieurs
-
-
-
 
 # qdot = q[0]
 
