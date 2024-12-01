@@ -25,7 +25,7 @@ class parametres():
     h = 10 # [W/m^2*K] coefficient de convection thermique
     tfrein = 10 #[s] temps freinage pour génération chaleur
     tatt = 5 #[s] temps attente pour T max
-    Tmax = 425 #[K] T maximum sécuritaire
+    Tmax = 425+273.15 #[K] T maximum sécuritaire
     n = 100 # Nombre de noeuds [-]
     dr = (Re-Ri)/(n-1) #Pas en espace [m]
       
@@ -46,17 +46,28 @@ plt.figure(figsize=(10, 6))
 # Courbes pour chaque cas
 for i, qdot in enumerate(q): 
     r, sol, Ttot = mdf(prm, qdot)
-    plt.plot(r, sol, label=labels[i], color=colors[i], linewidth=2)
+    print(f"T max avec {labels[i]}: {round((max(sol)-273.15), 2)} °C")
+    plt.plot(r, (sol-273.15), label=labels[i], color=colors[i], linewidth=2)
+
+# Courbe à 425 Celcius
+
+y_max = np.full(prm.n, prm.Tmax-273.15)
+x = np.linspace(0, prm.Re, prm.n)
+plt.plot(x , y_max, label='température maximale permise de 425 °C')
 
 # Graphique
-plt.title("Distribution radiale de la température pour différents cas de freinage", fontsize=14)
+plt.title("Distribution radiale de la température pour différents cas de freinage à 15 sec", fontsize=14)
 plt.xlabel("Rayon [m]", fontsize=12)
-plt.ylabel("Température [K]", fontsize=12)
+plt.ylabel("Température [°C]", fontsize=12)
 plt.legend(fontsize=12)
 plt.grid(True)
 plt.tight_layout()
 
 plt.show()
+
+# Verification: posons des qdot inférieurs
+
+
 
 
 # qdot = q[0]
