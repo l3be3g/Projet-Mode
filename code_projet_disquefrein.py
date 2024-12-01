@@ -37,6 +37,7 @@ def mdf(prm, q):
     tempe_avant = tempe_init
     Ttot= []
     t=0
+   
 
     dt = (prm.tfrein + prm.tatt) / (prm.n -1)
 
@@ -55,31 +56,27 @@ def mdf(prm, q):
     
 
     while t < (prm.tfrein + prm.tatt):
-
     
-        for i in range (1,(prm.n)-1):
-            if r[i] < prm.Ri: 
-                q_local = 0
-                
-            else:
-                q_local = q
+        if t < prm.tfrein :
+            for i in range (1,(prm.n)-1):
+                if r[i] < prm.Ri: 
+                    q_local = 0
 
-            A[i,i-1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
-            A[i,i]= 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
-            A[i,i+1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((-prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
-            b[i] = tempe_avant[i] + ( ( q_local * dt ) / (prm.rho * prm.Cp ) ) + ( 100 * prm.h * r[i]**2 * dt ) / ( prm.rho * prm.Cp )
+                else:
+                    q_local = q
+
+                A[i,i-1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
+                A[i,i]= 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
+                A[i,i+1]= -((prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) - ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
+                b[i] = tempe_avant[i] + ( ( q_local * dt ) / (prm.rho * prm.Cp ) ) + ( 100 * prm.h * r[i]**2 * dt * prm.Tair) / ( prm.rho * prm.Cp )
         
+        else:
+            q_local = 0
+            
         sol= np.linalg.solve(A,b)
         Ttot.append(sol)  #stack les sols pour voir evol en fct du temps
         tempe_avant = sol #ecraser vect_avant avec sol précédente
         t += dt
 
-
-    # t=np.append(t, t[-1] + dt)
-    # Ttot= np.vstack() (tous les T à tous les t)
-
-    
-    #ecraser vect_avant avec sol précédente
-
-    return r, sol, Ttot #quoi dautre? vecteur temps?
+    return r, sol, np.array(Ttot) #quoi dautre? vecteur temps?
 
