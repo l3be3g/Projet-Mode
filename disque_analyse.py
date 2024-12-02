@@ -67,20 +67,40 @@ plt.show()
 
 # Verification: posons des qdot inférieurs
 
-# qdot = q[0]
+## Représentation graphique
 
-# sim = mdf(prm,qdot)
+# Sélectionner un cas de freinage (par exemple, freinage fort)
+qdot = q[2]  # q[1] correspond à freinage urgent
+r, sol, Ttot = mdf(prm, qdot)
 
-# x = sim[0]
-# y = sim[1]
+# Conversion des résultats en une grille polaire
+theta = np.linspace(0, 2 * np.pi, 360)  # Angles de 0 à 360 degrés
+R, Theta = np.meshgrid(r, theta)  # Grille polaire étendue
 
-# # ## Représentation graphique dans un disque circulaire
-# theta = np.linspace(0, 2 * np.pi, 100)  # Angle pour les coordonnées polaires
-# r_grid, theta_grid = np.meshgrid(r, theta)  # Grille en coordonnées polaires
+# Étendre la température : disque jusqu'à 0.25 m, Tair au-delà
+T_extended = np.full_like(R, prm.Tair)  # Initialiser tout à Tair
+T_extended[:, :len(r)] = np.tile(sol, (len(theta), 1))  # Mettre la température calculée pour r ≤ 0.25
 
-# # ## Conversion vers les coordonnées cartésiennes
-# x = r_grid * np.cos(theta_grid)
-# y = r_grid * np.sin(theta_grid)
+# Conversion en coordonnées cartésiennes pour le tracé
+X = R * np.cos(Theta)
+Y = R * np.sin(Theta)
 
-# # ## Température étendue sur les angles pour la visualisation
-# T_grid = np.tile(T, (len(theta), 1))
+# Création de la heatmap
+plt.figure(figsize=(10, 10))
+heatmap = plt.pcolormesh(X, Y, T_extended - 273.15, shading='auto', cmap='coolwarm')  # Conversion en °C
+plt.colorbar(heatmap, label="Température [°C]")  # Barre de couleur pour les températures
+
+# Ajouter un cercle représentant la limite extérieure (r = 0.25 m)
+circle = plt.Circle((0, 0), prm.Re, color='black', fill=False, linestyle="--", linewidth=1.5)
+plt.gca().add_artist(circle)
+
+plt.title("Heatmap de la température sur le disque de frein (freinage urgent)", fontsize=16)
+plt.xlabel("Position X [m]", fontsize=12)
+plt.ylabel("Position Y [m]", fontsize=12)
+plt.axis("equal")
+plt.xlim([-0.3, 0.3])  # Étendre les limites pour inclure la région autour
+plt.ylim([-0.3, 0.3])
+plt.grid(False)
+plt.tight_layout()
+
+plt.show()
