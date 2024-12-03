@@ -1,5 +1,4 @@
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -16,46 +15,43 @@ except:
 #------------------------------------------------------------------------------
 
 class parametres():
-    Re = 0.25 #[m] rayon externe du disque de frein
-    Ri = (2*Re)/3 #[m] rayon minimal où il y a propagation de température
-    k = 70 #[W/m*K] coefficient conductivité thermique du matériau du disque de frein
-    Cp = 480 #[J/kg*K] capacité calorifique du matériau du disque de frein
-    rho = 7200 #[kg/m^3] densité
-    Tair = 293.15  #[K] Température infini de l'air
-    h = 10 # [W/m^2*K] coefficient de convection thermique
-    tfrein = 10 #[s] temps freinage pour génération chaleur
-    tatt = 5 #[s] temps attente pour T max
-    Tmax = 425+273.15 #[K] T maximum sécuritaire
-    n = 100 # Nombre de noeuds [-]
-    dr = (Re)/(n-1) #Pas en espace [m]
+    Re = 0.25          #[m] Rayon externe du disque de frein
+    Ri = (2*Re)/3      #[m] Rayon minimal où il y a propagation de température
+    k = 70             #[W/m*K] Coefficient conductivité thermique du matériau du disque de frein
+    Cp = 480           #[J/kg*K] Capacité calorifique du matériau du disque de frein
+    rho = 7200         #[kg/m^3] Densité
+    Tair = 293.15      #[K] Température infini de l'air
+    h = 10             #[W/m^2*K] Coefficient de convection thermique
+    tfrein = 10        #[s] Temps freinage pour génération chaleur
+    tatt = 5           #[s] Temps attente pour T max
+    Tmax = 425+273.15  #[K] T maximum sécuritaire
+    n = 100            #[-] Nombre de noeuds
+    dr = (Re)/(n-1)    #[m] Pas en espace 
       
 prm = parametres()
 
-
-# trois cas de génération de chaleur q [W/m^3] pour [faible, fort, urgence]
-q = [(3*10**7),(6*10**7),(1.3*10**8)]
-
 # Méthode de différences finies
 
-# Truc pour graph
+
+# 3 cas de génération de chaleur q [W/m^3] pour [faible, fort, urgence]
+q = [(3*10**7),(6*10**7),(1.3*10**8)]
 labels = ["Freinage faible", "Freinage fort", "Freinage d'urgence"]
 colors = ["blue", "orange", "red"]
 
-plt.figure(figsize=(10, 6))
 
-# Courbes pour chaque cas
+# Tracage des courbes pour chaque cas
 for i, qdot in enumerate(q): 
     r, sol, Ttot = mdf(prm, qdot)
     print(f"T max avec {labels[i]}: {round((max(sol)-273.15), 2)} °C")
     plt.plot(r, (sol-273.15), label=labels[i], color=colors[i], linewidth=2)
 
-# Courbe à 425 Celcius
-
+# Ajout Courbe à 425 Celcius
 y_max = np.full(prm.n, prm.Tmax-273.15)
 x = np.linspace(0, prm.Re, prm.n)
 plt.plot(x , y_max, label='température maximale permise de 425 °C')
 
 # Graphique
+plt.figure(figsize=(10, 6))
 plt.title("Distribution radiale de la température pour différents cas de freinage à 15 sec", fontsize=14)
 plt.xlabel("Rayon [m]", fontsize=12)
 plt.ylabel("Température [°C]", fontsize=12)
@@ -65,12 +61,11 @@ plt.tight_layout()
 
 plt.show()
 
-# Verification: posons des qdot inférieurs
 
-## Représentation graphique
+# Représentation graphique
 
-# Sélectionner un cas de freinage (par exemple, freinage fort)
-qdot = q[2]  # q[1] correspond à freinage urgent
+# Sélectionner un cas de freinage (ici, urgent)
+qdot = q[2]  # q[2] correspond à freinage urgent
 r, sol, Ttot = mdf(prm, qdot)
 
 # Conversion des résultats en une grille polaire
@@ -101,3 +96,7 @@ plt.grid(False)
 plt.tight_layout()
 
 plt.show()
+
+# Verification: posons un Ri inférieur (R/3)
+
+#bla bla bla
