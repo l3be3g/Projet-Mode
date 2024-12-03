@@ -48,11 +48,11 @@ for i, qdot in enumerate(q):
 # Ajout Courbe à 425 Celcius
 y_max = np.full(prm.n, prm.Tmax-273.15)
 x = np.linspace(0, prm.Re, prm.n)
-plt.plot(x , y_max, label='température maximale permise de 425 °C')
+plt.plot(x , y_max, label='Température maximale permise de 425 °C')
 
 # Graphique
 
-plt.title("Distribution radiale de la température pour différents cas de freinage à 15 sec", fontsize=10)
+plt.title("Distribution radiale de la température pour différents cas de freinage sur 15 sec", fontsize=10)
 plt.xlabel("Rayon [m]", fontsize=10)
 plt.ylabel("Température [°C]", fontsize=10)
 plt.legend(fontsize=9)
