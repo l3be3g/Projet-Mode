@@ -51,16 +51,15 @@ x = np.linspace(0, prm.Re, prm.n)
 plt.plot(x , y_max, label='température maximale permise de 425 °C')
 
 # Graphique
-plt.figure(figsize=(10, 6))
-plt.title("Distribution radiale de la température pour différents cas de freinage à 15 sec", fontsize=14)
-plt.xlabel("Rayon [m]", fontsize=12)
-plt.ylabel("Température [°C]", fontsize=12)
-plt.legend(fontsize=12)
+
+plt.title("Distribution radiale de la température pour différents cas de freinage à 15 sec", fontsize=10)
+plt.xlabel("Rayon [m]", fontsize=10)
+plt.ylabel("Température [°C]", fontsize=10)
+plt.legend(fontsize=9)
 plt.grid(True)
 plt.tight_layout()
-
 plt.show()
-
+ 
 
 # Représentation graphique
 
@@ -81,14 +80,14 @@ X = R * np.cos(Theta)
 Y = R * np.sin(Theta)
 
 # Création de la heatmap
-plt.figure(figsize=(10, 10))
+plt.figure(figsize=(8, 8))
 heatmap = plt.pcolormesh(X, Y, T_extended - 273.15, shading='auto', cmap='coolwarm')  # Conversion en °C
 plt.colorbar(heatmap, label="Température [°C]")  # Barre de couleur pour les températures
 
 # Ajouts sur le Graphique
-plt.title("Heatmap de la température sur le disque de frein (freinage urgent)", fontsize=16)
-plt.xlabel("Position X [m]", fontsize=12)
-plt.ylabel("Position Y [m]", fontsize=12)
+plt.title("Heatmap de la température sur le disque de frein (freinage urgent)", fontsize=12)
+plt.xlabel("Position X [m]", fontsize=10)
+plt.ylabel("Position Y [m]", fontsize=10)
 plt.axis("equal")
 plt.xlim([-0.3, 0.3])  # Étendre les limites pour inclure la région autour
 plt.ylim([-0.3, 0.3])
