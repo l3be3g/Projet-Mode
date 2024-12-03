@@ -37,7 +37,12 @@ q = [(3*10**7),(6*10**7),(1.3*10**8)]
 
 # Méthode de différences finies
 
+<<<<<<< Updated upstream
 # Truc pour graph
+=======
+# 3 cas de génération de chaleur q [W/m^3] pour [faible, fort, urgence]
+q = [(3*10**7),(6*10**7),(1.3*10**8)]
+>>>>>>> Stashed changes
 labels = ["Freinage faible", "Freinage fort", "Freinage d'urgence"]
 colors = ["blue", "orange", "red"]
 
@@ -62,7 +67,45 @@ plt.ylabel("Température [°C]", fontsize=12)
 plt.legend(fontsize=12)
 plt.grid(True)
 plt.tight_layout()
+<<<<<<< Updated upstream
 
+=======
+plt.show()
+ 
+
+# Représentation graphique
+
+# Sélectionner un cas de freinage (ici, urgent)
+qdot = q[2]  # q[2] correspond à freinage urgent
+r, sol, Ttot = mdf(prm, qdot)
+
+# Conversion des résultats en une grille polaire
+theta = np.linspace(0, 2 * np.pi, 360)  # Angles de 0 à 360 degrés
+R, Theta = np.meshgrid(r, theta)  # Grille polaire étendue
+
+# Étendre la température : disque jusqu'à 0.25 m, Tair au-delà
+T_extended = np.full_like(R, prm.Tair)  # Initialiser tout à Tair
+T_extended[:, :len(r)] = np.tile(sol, (len(theta), 1))  # Mettre la température calculée pour r ≤ 0.25
+
+# Conversion en coordonnées cartésiennes pour le tracé
+X = R * np.cos(Theta)
+Y = R * np.sin(Theta)
+
+# Création de la heatmap
+plt.figure(figsize=(8, 8))
+heatmap = plt.pcolormesh(X, Y, T_extended - 273.15, shading='auto', cmap='coolwarm')  # Conversion en °C
+plt.colorbar(heatmap, label="Température [°C]")  # Barre de couleur pour les températures
+
+# Ajouts sur le Graphique
+plt.title("Heatmap de la température sur le disque de frein (freinage urgent)", fontsize=12)
+plt.xlabel("Position X [m]", fontsize=10)
+plt.ylabel("Position Y [m]", fontsize=10)
+plt.axis("equal")
+plt.xlim([-0.3, 0.3])  # Étendre les limites pour inclure la région autour
+plt.ylim([-0.3, 0.3])
+plt.grid(False)
+plt.tight_layout()
+>>>>>>> Stashed changes
 plt.show()
 
 # Verification: posons des qdot inférieurs
