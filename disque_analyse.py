@@ -90,10 +90,7 @@ plt.figure(figsize=(10, 10))
 heatmap = plt.pcolormesh(X, Y, T_extended - 273.15, shading='auto', cmap='coolwarm')  # Conversion en °C
 plt.colorbar(heatmap, label="Température [°C]")  # Barre de couleur pour les températures
 
-# Ajouter un cercle représentant la limite extérieure (r = 0.25 m)
-circle = plt.Circle((0, 0), prm.Re, color='black', fill=False, linestyle="--", linewidth=1.5)
-plt.gca().add_artist(circle)
-
+# Ajouts sur le Graphique
 plt.title("Heatmap de la température sur le disque de frein (freinage urgent)", fontsize=16)
 plt.xlabel("Position X [m]", fontsize=12)
 plt.ylabel("Position Y [m]", fontsize=12)
