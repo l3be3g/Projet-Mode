@@ -61,10 +61,10 @@ plt.tight_layout()
 plt.show()
  
 
-# Représentation graphique
+# Représentation graphique (coordonnées cartésiennes)
 
 # Sélectionner un cas de freinage (ici, urgent)
-qdot = q[2]  # q[2] correspond à freinage urgent
+qdot = q[2]
 r, sol, Ttot = mdf(prm, qdot)
 
 # Conversion des résultats en une grille polaire
@@ -81,7 +81,7 @@ Y = R * np.sin(Theta)
 
 # Création de la heatmap
 plt.figure(figsize=(8, 8))
-heatmap = plt.pcolormesh(X, Y, T_extended - 273.15, shading='auto', cmap='coolwarm')  # Conversion en °C
+heatmap = plt.pcolormesh(X, Y, T_extended - 273.15, shading='auto', cmap='coolwarm')
 plt.colorbar(heatmap, label="Température [°C]")  # Barre de couleur pour les températures
 
 # Ajouts sur le Graphique
@@ -96,6 +96,6 @@ plt.tight_layout()
 
 plt.show()
 
-# Verification: posons un Ri inférieur (R/3)
+# Verification 1: posons un Ri=(R/3) (graphiques heatmap)
 
-#bla bla bla
+# Verification 2: posons k=250 (graphiques courbe)
