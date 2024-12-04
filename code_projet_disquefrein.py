@@ -7,76 +7,86 @@ def mdf(prm, q):
 
     Entrées:
         - prm : Objet class parametres()
-            - Re : Rayon externe du disque de frein [m]
-            - Ri : Rayon minimal où il y a propagation de température [m]
-            - k : Conductivité thermique [W / m * K]
-            - Cp : Capacité calorifique [J / kg * K]
-            - rho : Densité [kg / m3]
-            - Tair : Température infinie de l'air
-            - h : Coefficient de convection thermique [W / m^2 * K]
-            - tfrein : Temps de freinage [s]
-            - tatt : Temps attente pour Tmax [s]
-            - Tmax : Température maximum sécuritaire [K]
-            - n : Nombre de noeuds [-]
-            - dr : Pas en espace [m]
-        - q : 
+            -Re = 0.25 [m] Rayon externe du disque de frein
+            -Ri [m] Rayon minimal où il y a propagation de température
+            -k [W/m*K] Coefficient conductivité thermique du matériau du disque de frein
+            -Cp [J/kg*K] Capacité calorifique du matériau du disque de frein
+            -rho [kg/m^3] Densité
+            -Tair [K] Température infini de l'air
+            -h [W/m^2*K] Coefficient de convection thermique
+            -tfrein [s] Temps freinage pour génération chaleur
+            -tatt [s] Temps attente pour T max
+            -Tmax [K] T maximum sécuritaire
+            -n [-] Nombre de noeuds
+            -dr [m] Pas en espace
+        - q : [W/m^3] génération de chaleur [faible, fort, urgence]
+
     Sortie (dans l'ordre énuméré ci-bas):
         - r : Vecteur (array) de dimension N composé de la position radiale à laquelle les températures sont calculées, où N le nombre de noeuds.
         - sol : Vecteur (array) de dimension N composé de la température en fonction du rayon, où N le nombre de noeuds
         -Ttot : Vecteur (array) de dimension N*15 composé des vecteurs sol mis ensemble par vstack
     """
 
-    # Fonction à écrire
 
+    # Initialisation des matrice A, b 
     A = np.zeros([prm.n,prm.n])
     b = np.zeros(prm.n)
+
+    # Création d'un vecteur avec un nombre n de rayon et des valeurs de 0 au rayon externe
     r = np.linspace(0, prm.Re, prm.n)
 
-    #t= np.zeros(prm.n)
+    # Initalisation de la matrice de temps 
     tempe_init = np.full(prm.n, prm.Tair)
     tempe_avant = tempe_init
     Ttot= []
     t=0
    
-
+    # Calcul du pas de temps, temps total de la simulation divisé par le nombre d'intervalles
     dt = (prm.tfrein + prm.tatt) / (prm.n -1)
 
+    # Première condition frontière 
+    # Matrice A
     A[0,0]= -3
     A[0,1]= 4
     A[0,2]= -1
-    
-    
+
+    # Matrice B
+    b[0] = 0
+
+    # Deuxième condition frontière 
+    # Matrice A
     A[-1,-1]= ((-3*prm.k)/(2*prm.dr))-prm.h
     A[-1,-2]= (4*prm.k)/(2*prm.dr)
     A[-1,-3]= (-prm.k)/(2*prm.dr)
-    
-    
-    b[0] = 0
+
+    # Matrice B
     b[-1] = -prm.h * prm.Tair
-    
 
-    while t < (prm.tfrein + prm.tatt):
-    
-        if t < prm.tfrein :
-            for i in range (1,(prm.n)-1):
-                if r[i] < prm.Ri: 
-                    q_local = 0
+    # Tant que le temps est inférieur à la somme du temps de freinage et du temps d'attente ( = 15 secondes)
+    while t <= (prm.tfrein + prm.tatt):
+        for i in range(1, prm.n - 1):
+            # Si le temps est inférieur à 10 secondes et le rayon est supérieur au rayon inférieur
+            # q est égale à la une valeur en fonction du freinage
 
-                else:
-                    q_local = q
+            if t < prm.tfrein and r[i] >= prm.Ri:
+                q_local = q
 
-                A[i,i-1]= ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
-                A[i,i]= 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
-                A[i,i+1]= -((prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) - ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
-                b[i] = tempe_avant[i] + ( ( q_local * dt ) / (prm.rho * prm.Cp ) ) + ( 100 * prm.h * r[i]**2 * dt * prm.Tair) / ( prm.rho * prm.Cp )
-        
-        else:
-            q_local = 0
-            
-        sol= np.linalg.solve(A,b)
-        Ttot.append(sol)  #stack les sols pour voir evol en fct du temps
-        tempe_avant = sol #ecraser vect_avant avec sol précédente
-        t += dt
+            # Sinon q est égale à zéro
+            else:
+                q_local = 0
 
-    return r, sol, np.array(Ttot) #quoi dautre? vecteur temps?
+            # Matrice A
+            A[i, i - 1] = ((-prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
+            A[i, i] = 1 + ((2 * prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) + ((100 * prm.h * r[i]**2 * dt) / (prm.rho * prm.Cp))
+            A[i, i + 1] = -((prm.k * dt) / (prm.rho * prm.Cp * prm.dr**2)) - ((prm.k * dt) / (2 * prm.rho * prm.Cp * prm.dr * r[i]))
 
+            # Vecteur b
+            b[i] = tempe_avant[i] + ((q_local * dt) / (prm.rho * prm.Cp)) + ((100 * prm.h * r[i]**2 * dt * prm.Tair) / (prm.rho * prm.Cp))
+
+        # Résolution 
+        sol = np.linalg.solve(A, b) #Résolution avec fonction numpy
+        Ttot.append(sol)  # Stocker la solution dans le temps
+        tempe_avant = sol  # Mise à jour prochaine itération
+        t += dt # Pas du dt pour avancer dans le temps
+
+    return r, sol, Ttot 
